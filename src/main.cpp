@@ -24,16 +24,14 @@ void loop() {
   //   pixels.show();
   //   delay(DELAYVAL);   
   // }               
-  for (int brightness = 0; brightness < 256; brightness++) 
-  {
+  for (int brightness = 0; brightness < 256; brightness++) {
   
     for (int led = 0; led < NUMPIXELS; led++)
     {
       pixels.setPixelColor (led, pixels.Color(brightness, brightness, 50));
     }
     pixels.show();
+
     delay(DELAYVAL);
-
   } 
-
 }
