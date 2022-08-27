@@ -29,26 +29,61 @@ void setup() {
   Serial.println("Starting...");
 }
 
-// the loop function runs over and over again forever
-void loop() {
-  Serial.println("starting loop");
+// 1-2
+int effect = 2;
 
-  pixels.clear();
-
-  // for(int i=0; i<NUMPIXELS; i++) {
-
-  //   pixels.setPixelColor(i, pixels.Color(50, 150, 75));
-  //   pixels.show();
-  //   delay(DELAYVAL);   
-  // }               
-  for (int brightness = 0; brightness < 256; brightness++) {
+void doEffect1() {
+ for (int brightness = 0; brightness < 256; brightness++) {
   
     for (int led = 0; led < NUMPIXELS; led++)
     {
-      pixels.setPixelColor (led, pixels.Color(brightness, brightness, 50));
+      pixels.setPixelColor (led, pixels.Color(50, 100, brightness));
     }
     pixels.show();
 
     delay(DELAYVAL);
+  } 
+}
+
+void doEffect2() {
+  for (int led = 0; led < NUMPIXELS; led++)
+    {
+      pixels.setPixelColor (led, pixels.Color(255, 0, 0));
+    }
+    pixels.show();
+}
+
+int holdingButton = false;
+
+void checkEffectChange() {
+  int button1Pressed = digitalRead(KEY1);
+  if (button1Pressed == LOW) { // == means "is it equal?"
+    Serial.println("button1 down");
+    if (holdingButton == false) {
+      if (effect == 1) {
+        effect = 2;
+      } else {
+        effect = 1;
+      }
+      holdingButton = true;
+    }
+    // effect = 1;  // = means "it becomes"
+  } else {
+      holdingButton = false;
+      Serial.println("button1 up");
+  }
+}
+
+// the loop function runs over and over again forever
+void loop() {
+  checkEffectChange();
+  // Serial.println("starting loop");
+
+  pixels.clear();
+
+  if (effect == 1) {
+    doEffect1(); // SLOW AF
+  } else {
+    doEffect2();
   } 
 }
