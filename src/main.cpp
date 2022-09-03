@@ -2,21 +2,21 @@
 #include <Adafruit_NeoPixel.h>
 
 // LED strip
-#define PIN        6
+#define PIN 6
 #define NUMPIXELS 30
 
 // 4 digital keypad. pins are pulled HIGH, and go LOW when pressed.
-#define KEY1       4
-#define KEY2       5
-#define KEY3       2
-#define KEY4       3
+#define KEY1 4
+#define KEY2 5
+#define KEY3 2
+#define KEY4 3
 
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 #define DELAYVAL 100
 
-
 // the setup function runs once when you press reset or power the board
-void setup() {
+void setup()
+{
   // set the keypad keys to inputs with pull-up resistors.
   pinMode(KEY1, INPUT_PULLUP);
   pinMode(KEY2, INPUT_PULLUP);
@@ -31,59 +31,78 @@ void setup() {
 
 // 1-2
 int effect = 2;
+int brightness = 0;
+unsigned long when_last_updated = millis();
+void doEffect1()
+{
 
-void doEffect1() {
- for (int brightness = 0; brightness < 256; brightness++) {
-  
-    for (int led = 0; led < NUMPIXELS; led++)
-    {
-      pixels.setPixelColor (led, pixels.Color(50, 100, brightness));
-    }
-    pixels.show();
+  for (int led = 0; led < NUMPIXELS; led++)
+  {
+    pixels.setPixelColor(led, pixels.Color(50, 100, brightness));
+  }
+  pixels.show();
+  if (millis() - when_last_updated > DELAYVAL)
+  {
+    brightness++;
+    if (brightness >= 256)
+      brightness == 0;
 
-    delay(DELAYVAL);
-  } 
+    when_last_updated = millis();
+  }
 }
 
-void doEffect2() {
+void doEffect2()
+{
   for (int led = 0; led < NUMPIXELS; led++)
-    {
-      pixels.setPixelColor (led, pixels.Color(255, 0, 0));
-    }
-    pixels.show();
+  {
+    pixels.setPixelColor(led, pixels.Color(255, 0, 0));
+  }
+  pixels.show();
 }
 
 int holdingButton = false;
 
-void checkEffectChange() {
+void checkEffectChange()
+{
   int button1Pressed = digitalRead(KEY1);
-  if (button1Pressed == LOW) { // == means "is it equal?"
+  if (button1Pressed == LOW)
+  { // == means "is it equal?"
     Serial.println("button1 down");
-    if (holdingButton == false) {
-      if (effect == 1) {
+    if (holdingButton == false)
+    {
+      if (effect == 1)
+      {
         effect = 2;
-      } else {
+      }
+      else
+      {
         effect = 1;
       }
       holdingButton = true;
     }
     // effect = 1;  // = means "it becomes"
-  } else {
-      holdingButton = false;
-      Serial.println("button1 up");
+  }
+  else
+  {
+    holdingButton = false;
+    Serial.println("button1 up");
   }
 }
 
 // the loop function runs over and over again forever
-void loop() {
+void loop()
+{
   checkEffectChange();
   // Serial.println("starting loop");
 
   pixels.clear();
 
-  if (effect == 1) {
+  if (effect == 1)
+  {
     doEffect1(); // SLOW AF
-  } else {
+  }
+  else
+  {
     doEffect2();
-  } 
+  }
 }
