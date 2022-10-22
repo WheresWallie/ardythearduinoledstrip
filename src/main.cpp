@@ -33,21 +33,56 @@ void setup()
 
 // 1-2
 int effect = 2;
-int brightness = 0;
+int colourIndex = 0;
 unsigned long when_last_updated = millis();
+
 void doEffect1()
 {
+  int index = colourIndex;
+  int red;
+  int green;
+  int blue;
+
+  if (index >= 1024)
+  {
+    index -= 2 * (index - 1024 + 1) - 1;
+  }
+
+  if (index < 256)
+  {
+    red = 0;
+    green = index;
+    blue = 255;
+  }
+  else if (index < 512)
+  {
+    red = 0;
+    green = 255;
+    blue = 511 - index;
+  }
+  else if (index < 768)
+  {
+    red = index - 512;
+    green = 255;
+    blue = 0;
+  }
+  else
+  {
+    red = 255;
+    green = 1023 - index;
+    blue = 0;
+  }
 
   for (int led = 0; led < NUMPIXELS; led++)
   {
-    pixels.setPixelColor(led, pixels.Color(50, 100, brightness));
+    pixels.setPixelColor(led, pixels.Color(red, green, blue));
   }
   pixels.show();
-  if (millis() - when_last_updated > DELAYVAL)
+  if (millis() - when_last_updated > /*DELAYVAL*/ 5)
   {
-    brightness++;
-    if (brightness >= 256)
-      brightness == 0;
+    colourIndex++;
+    if (colourIndex >= 2048)
+      colourIndex == 0;
 
     when_last_updated = millis();
   }
